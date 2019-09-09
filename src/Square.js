@@ -1,18 +1,18 @@
-import React from 'react';
-import './index.css';
+import React from "react";
+import "./index.css";
 
 class Square extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {  }
+    this.state = {};
   }
-  render() { 
-    return ( 
-      <button className="square">
+  render() {
+    return (
+      <button className="square" onClick={() => this.props.onClick()}>
         {this.props.value}
       </button>
-     );
+    );
   }
 }
 
-export default Square
+export default Square;
