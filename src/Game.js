@@ -3,9 +3,12 @@ import './index.css';
 import Board from './Board.js';
 
 class Game extends React.Component {
+
   WN = 5;
   n = 20;
   winner = null;
+  winningSquares;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +19,8 @@ class Game extends React.Component {
       ],
       stepNumber: 0,
       xIsNext: true
-    }
+    };
+    this.winningSquares = this.createSquares(this.n)
   }
   render() {
     const history = this.state.history;
@@ -43,6 +47,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
+            winningSquares={this.winningSquares}
             onClick={(i, j) => this.handleClick(i, j)}
           />
         </div>
@@ -90,6 +95,19 @@ class Game extends React.Component {
 
   jumpTo(step) {
     if (this.winner) {
+      if (step === 0) {
+        this.setState({
+          history: [
+            {
+              squares: this.createSquares(this.n)
+            }
+          ],
+          stepNumber: step,
+          xIsNext: (step % 2) === 0
+        });
+        this.winner = null;
+        this.winningSquares = this.createSquares(this.n);
+      }
       return;
     }
     this.setState({
@@ -116,6 +134,10 @@ class Game extends React.Component {
       if (letter === squares[i][col]) {
         leftNo++;
         if (leftNo + 1 === this.WN) {
+          for (let index = j - leftNo; index < j - leftNo + this.WN; index++) {
+            this.winningSquares[i][index] = true;
+          }
+          console.log(this.winningSquares);
           return true;
         }
         col--;
@@ -131,6 +153,9 @@ class Game extends React.Component {
       if (letter === squares[i][col]) {
         rightNo++;
         if (leftNo + rightNo + 1 === this.WN) {
+          for (let index = j - leftNo; index < j - leftNo + this.WN; index++) {
+            this.winningSquares[i][index] = true;
+          }
           return true;
         }
         col++;
@@ -153,6 +178,9 @@ class Game extends React.Component {
       if (letter === squares[row][j]) {
         topNo++;
         if (topNo + 1 === this.WN) {
+          for (let index = i - topNo; index < i - topNo + this.WN; index++) {
+            this.winningSquares[index][j] = true;
+          }
           return true;
         }
         row--;
@@ -168,6 +196,9 @@ class Game extends React.Component {
       if (letter === squares[row][j]) {
         bottomNo++;
         if (topNo + bottomNo + 1 === this.WN) {
+          for (let index = i - topNo; index < i - topNo + this.WN; index++) {
+            this.winningSquares[index][j] = true;
+          }
           return true;
         }
         row++;
@@ -191,6 +222,9 @@ class Game extends React.Component {
       if (letter === squares[row][col]) {
         leftNo++;
         if (leftNo + 1 === this.WN) {
+          for (let index = i - leftNo, cdex = j - leftNo; index < i - leftNo + this.WN; index++ , cdex++) {
+            this.winningSquares[index][cdex] = true;
+          }
           return true;
         }
         row--;
@@ -208,6 +242,9 @@ class Game extends React.Component {
       if (letter === squares[row][col]) {
         rightNo++;
         if (leftNo + rightNo + 1 === this.WN) {
+          for (let index = i - leftNo, cdex = j - leftNo; index < i - leftNo + this.WN; index++ , cdex++) {
+            this.winningSquares[index][cdex] = true;
+          }
           return true;
         }
         row++;
@@ -233,6 +270,9 @@ class Game extends React.Component {
       if (letter === squares[row][col]) {
         leftNo++;
         if (leftNo + 1 === this.WN) {
+          for (let index = i + leftNo, cdex = j - leftNo; cdex < j - leftNo + this.WN; index-- , cdex++) {
+            this.winningSquares[index][cdex] = true;
+          }
           return true;
         }
         row++;
@@ -250,7 +290,9 @@ class Game extends React.Component {
       if (letter === squares[row][col]) {
         rightNo++;
         if (leftNo + rightNo + 1 === this.WN) {
-          return true;
+          for (let index = i + leftNo, cdex = j - leftNo; cdex < j - leftNo + this.WN; index-- , cdex++) {
+            this.winningSquares[index][cdex] = true;
+          }
         }
         row--;
         col++;
